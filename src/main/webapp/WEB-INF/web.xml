@@ -25,6 +25,16 @@
         A scriptable management web application for the Tomcat Web Server;
         Manager lets you view, load/unload/etc particular web applications.
     </description>
+    
+    <servlet>
+        <servlet-name>Categories</servlet-name>
+        <servlet-class>com.bcreagh.fc.servlets.categoryservlets.CategoriesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Categories</servlet-name>
+        <url-pattern>/categories</url-pattern>
+    </servlet-mapping>
 
 
 
