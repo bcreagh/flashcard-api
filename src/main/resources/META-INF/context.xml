@@ -1,0 +1,8 @@
+<Context>
+    <ResourceLink name="linkDbUser"
+                  global="dbUser"
+                  type="java.lang.String"/>
+    <ResourceLink name="linkDbPassword"
+                  global="dbPassword"
+                  type="java.lang.String"/>
+</Context>

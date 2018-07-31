@@ -1,6 +1,7 @@
 package com.bcreagh.fc.servlets.categoryservlets;
 
 import com.bcreagh.fc.domain.Category;
+import com.bcreagh.fc.persistance.CategoryRepository;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
@@ -20,7 +21,8 @@ public class CategoryServlet extends HttpServlet {
 
             id = getPositiveIntParameter(request, "id");
 
-            Category category = new Category(id, "Assembly");
+            CategoryRepository categoryRepository = new CategoryRepository();
+            Category category = categoryRepository.getCategory(id);
             Gson gson = new Gson();
 
             String json = gson.toJson(category);
@@ -33,11 +35,19 @@ public class CategoryServlet extends HttpServlet {
 
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(e.toString());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(e.toString());
         }
 
     }
+
+    // doPost
+
+    // doPut
+
+    // doDelete
 
     private int getPositiveIntParameter(HttpServletRequest request, String param) {
         int paramValue = getIntParameter(request, param);
@@ -66,5 +76,7 @@ public class CategoryServlet extends HttpServlet {
 
         return paramValue;
     }
+
+
 
 }
