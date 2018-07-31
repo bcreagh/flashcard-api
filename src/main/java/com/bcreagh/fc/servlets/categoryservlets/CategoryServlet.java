@@ -35,10 +35,8 @@ public class CategoryServlet extends HttpServlet {
 
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(e.toString());
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write(e.toString());
         }
 
     }
