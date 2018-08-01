@@ -10,7 +10,33 @@ public class ContextUtility {
     // They tend to lead to tightly coupled, difficult to test code
     // However, this project is for revision purposes only and I didn't feel the need to set up dependency injection and extensive testing
 
-    public static String getStringResource(String resourceName) throws NamingException {
+    private static final ContextUtility instance = new ContextUtility();
+
+    private final String username;
+    private final String dbUrl;
+    private final String password;
+
+    public static ContextUtility getInstance() {
+        return instance;
+    }
+
+    private ContextUtility() {
+        if(instance != null) {
+            throw new UnsupportedOperationException("ContextUtility has already been instantiated.");
+        }
+
+        try {
+
+        username = getStringResource("linkDbUser");
+        password = getStringResource("linkDbPassword");
+        dbUrl = "jdbc:mysql://localhost:3306/flashcards?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+        } catch (NamingException e) {
+            throw new RuntimeException("The database credentials could not be retrieved.", e);
+        }
+    }
+
+    private static String getStringResource(String resourceName) throws NamingException {
         String result = null;
 
         Context initCtx = new InitialContext();
@@ -20,4 +46,16 @@ public class ContextUtility {
         return result;
     }
 
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDbUrl() {
+        return dbUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

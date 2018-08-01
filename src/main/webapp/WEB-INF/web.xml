@@ -36,6 +36,9 @@
         <url-pattern>/categories</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>com.bcreagh.fc.Startup</listener-class>
+    </listener>
 
 
 </web-app>
