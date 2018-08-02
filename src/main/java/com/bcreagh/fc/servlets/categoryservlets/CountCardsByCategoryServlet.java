@@ -1,43 +1,39 @@
 package com.bcreagh.fc.servlets.categoryservlets;
 
-import com.bcreagh.fc.domain.Category;
+import com.bcreagh.fc.domain.DTO.IntegerResult;
 import com.bcreagh.fc.persistance.CategoryRepository;
 import com.bcreagh.fc.servlets.BaseServlet;
 import com.google.gson.Gson;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.List;
 
-@WebServlet("/category")
-public class CategoryServlet extends BaseServlet {
+@WebServlet("/category/count")
+public class CountCardsByCategoryServlet extends BaseServlet {
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            int id;
-
-            id = getPositiveIntParameter(request, "id");
+            int id = getPositiveIntParameter(request, "id");
 
             CategoryRepository categoryRepository = new CategoryRepository();
-            Category category = categoryRepository.getCategory(id);
-            Gson gson = new Gson();
+            int count = categoryRepository.countNumberOfCardsInACategory(id);
 
-            String json = gson.toJson(category);
+            IntegerResult result = new IntegerResult(count);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(result);
 
             response.setHeader("content-type", "application/json");
             response.setHeader("Access-Control-Allow-Origin", "*");
-
             response.getWriter().write(json);
-
 
         } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
     }
 }

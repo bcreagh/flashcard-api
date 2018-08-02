@@ -66,4 +66,33 @@ public class CategoryRepository {
         return category;
     }
 
+    public int countNumberOfCardsInACategory(int id) throws SQLException {
+
+        int count;
+        String sql = "select count(*) from flashcard, category, card_category " +
+                "where flashcard.card_id = card_category.card_id " +
+                "and card_category.category_id = category.category_id " +
+                "and category.category_id = ?";
+
+        if(id <= 0) {
+            throw new IllegalArgumentException("The id of the category must be greater than 0");
+        }
+
+        try (
+                Connection conn = DriverManager.getConnection(dbUrl, username, password);
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, id);
+
+            try(ResultSet rs = stmt.executeQuery()) {
+                rs.first();
+                count = rs.getInt(1);
+
+
+            }
+        }
+        return count;
+    }
+
 }
