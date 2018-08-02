@@ -1,11 +1,13 @@
 package com.bcreagh.fc.persistance;
 
 import com.bcreagh.fc.domain.Category;
+import com.bcreagh.fc.domain.Flashcard;
 
 import javax.naming.NamingException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CategoryRepository {
 
@@ -93,6 +95,80 @@ public class CategoryRepository {
             }
         }
         return count;
+    }
+
+    public Flashcard getRandomCardByCategoryId(int categoryId) throws SQLException {
+        //returns a random card from the category specified by the categoryId
+
+        int numberOfCardsInCategory = countNumberOfCardsInACategory(categoryId);
+        int randomlyGeneratedPosition = getRandomInt(numberOfCardsInCategory);
+
+        Flashcard flashcard = getNthCardInCategory(categoryId, randomlyGeneratedPosition);
+        return flashcard;
+    }
+
+    public Flashcard getNthCardInCategory(int categoryId, int n) throws SQLException {
+        List<Flashcard> flashcards = getCardsByCategory(categoryId, n - 1, 1);
+        if(flashcards.size() == 0) {
+            throw new IllegalArgumentException("No flashcard exists at position " + n);
+        }
+        return flashcards.get(0);
+    }
+
+
+
+    public List<Flashcard> getCardsByCategory(int categoryId, int skip, int take) throws SQLException {
+        String sql = "select flashcard.* from flashcard, category, card_category " +
+                "where flashcard.card_id = card_category.card_id " +
+                "and card_category.category_id = category.category_id " +
+                "and category.category_id = ? " +
+                "limit ?, ?";
+        List<Flashcard> flashcards = new ArrayList<>();
+
+        if(categoryId <= 0) {
+            throw new IllegalArgumentException("The id of the category must be greater than 0");
+        }
+        if(skip < 0) {
+            throw new IllegalArgumentException("The skip parameter must be greater than 0");
+        }
+        if(take < 0) {
+            throw new IllegalArgumentException("The take parameter must be greater than 0");
+        }
+
+        try (
+                Connection conn = DriverManager.getConnection(dbUrl, username, password);
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, categoryId);
+            stmt.setInt(2, skip);
+            stmt.setInt(3, take);
+
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    flashcards.add(getFlashcardFromResultSet(rs));
+                }
+            }
+        }
+        return flashcards;
+    }
+
+    private int getRandomInt(int max) {
+        Random random = new Random();
+        int result = random.nextInt(max) + 1;
+        return result;
+    }
+
+    private Flashcard getFlashcardFromResultSet(ResultSet resultSet) throws SQLException {
+        Flashcard flashcard = new Flashcard();
+        try {
+            flashcard.setId(resultSet.getInt("card_id"));
+            flashcard.setQuestion(resultSet.getString("question"));
+            flashcard.setAnswer(resultSet.getString("answer"));
+            return flashcard;
+        } catch (SQLException e) {
+            throw new SQLException("Could not create a Flashcard object from the ResultSet", e);
+        }
     }
 
 }
