@@ -23,15 +23,8 @@ public class CategoryServlet extends BaseServlet {
 
             CategoryRepository categoryRepository = new CategoryRepository();
             Category category = categoryRepository.getCategory(id);
-            Gson gson = new Gson();
 
-            String json = gson.toJson(category);
-
-            response.setHeader("content-type", "application/json");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-
-            response.getWriter().write(json);
-
+            writeJsonResponse(response, category);
 
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());

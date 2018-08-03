@@ -3,13 +3,10 @@ package com.bcreagh.fc.servlets.categoryservlets;
 import com.bcreagh.fc.domain.DTO.IntegerResult;
 import com.bcreagh.fc.persistance.CategoryRepository;
 import com.bcreagh.fc.servlets.BaseServlet;
-import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @WebServlet("/category/count")
 public class CountCardsByCategoryServlet extends BaseServlet {
@@ -23,12 +20,7 @@ public class CountCardsByCategoryServlet extends BaseServlet {
 
             IntegerResult result = new IntegerResult(count);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(result);
-
-            response.setHeader("content-type", "application/json");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.getWriter().write(json);
+            writeJsonResponse(response, result);
 
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());

@@ -20,14 +20,8 @@ public class CardByIdServlet extends BaseServlet {
 
             Flashcard flashcard = flashcardRepository.getFlashcardById(id);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(flashcard);
-
-            response.setHeader("content-type", "application/json");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.getWriter().write(json);
-
-
+            writeJsonResponse(response, flashcard);
+            
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

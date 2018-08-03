@@ -1,7 +1,11 @@
 package com.bcreagh.fc.servlets;
 
+import com.google.gson.Gson;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class BaseServlet extends HttpServlet {
 
@@ -31,6 +35,15 @@ public class BaseServlet extends HttpServlet {
         }
 
         return paramValue;
+    }
+
+    protected <T> void writeJsonResponse(HttpServletResponse response, T data) throws IOException {
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+
+        response.setHeader("content-type", "application/json");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.getWriter().write(json);
     }
 
 

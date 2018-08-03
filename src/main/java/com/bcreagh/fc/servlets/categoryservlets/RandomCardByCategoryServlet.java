@@ -17,18 +17,13 @@ public class RandomCardByCategoryServlet extends BaseServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            FlashcardRepository flashcardRepository = new FlashcardRepository();
+
             CategoryRepository categoryRepository = new CategoryRepository();
             int id = getPositiveIntParameter(request, "id");
 
             Flashcard flashcard = categoryRepository.getRandomCardByCategoryId(id);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(flashcard);
-
-            response.setHeader("content-type", "application/json");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.getWriter().write(json);
+            writeJsonResponse(response, flashcard);
 
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());
