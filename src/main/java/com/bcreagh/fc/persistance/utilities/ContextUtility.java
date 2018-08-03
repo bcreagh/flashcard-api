@@ -1,4 +1,4 @@
-package com.bcreagh.fc.persistance;
+package com.bcreagh.fc.persistance.utilities;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

@@ -2,6 +2,8 @@ package com.bcreagh.fc.persistance;
 
 
 import com.bcreagh.fc.domain.Flashcard;
+import com.bcreagh.fc.persistance.utilities.ContextUtility;
+import com.bcreagh.fc.persistance.utilities.ResultSetConverter;
 
 import javax.naming.NamingException;
 import java.sql.*;
@@ -31,7 +33,7 @@ public class FlashcardRepository {
 
             try(ResultSet resultSet = stmt.executeQuery()) {
                 resultSet.first();
-                flashcard = getFlashcardFromResultSet(resultSet);
+                flashcard = ResultSetConverter.getFlashcardFromResultSet(resultSet);
             }
         }
 
@@ -39,18 +41,6 @@ public class FlashcardRepository {
             return flashcard;
         } else {
             throw new IllegalArgumentException("The record could not be found");
-        }
-    }
-
-    private Flashcard getFlashcardFromResultSet(ResultSet resultSet) throws SQLException {
-        Flashcard flashcard = new Flashcard();
-        try {
-            flashcard.setId(resultSet.getInt("card_id"));
-            flashcard.setQuestion(resultSet.getString("question"));
-            flashcard.setAnswer(resultSet.getString("answer"));
-            return flashcard;
-        } catch (SQLException e) {
-            throw new SQLException("Could not create a Flashcard object from the ResultSet", e);
         }
     }
 

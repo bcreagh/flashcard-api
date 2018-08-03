@@ -2,6 +2,8 @@ package com.bcreagh.fc.persistance;
 
 import com.bcreagh.fc.domain.Category;
 import com.bcreagh.fc.domain.Flashcard;
+import com.bcreagh.fc.persistance.utilities.ContextUtility;
+import com.bcreagh.fc.persistance.utilities.ResultSetConverter;
 
 import javax.naming.NamingException;
 import java.sql.*;
@@ -34,7 +36,7 @@ public class CategoryRepository {
 
             try(ResultSet rs = stmt.executeQuery()) {
                 rs.first();
-                category = getCategoryFromResultSet(rs);
+                category = ResultSetConverter.getCategoryFromResultSet(rs);
             }
         }
 
@@ -54,18 +56,11 @@ public class CategoryRepository {
                 ResultSet rs = stmt.executeQuery()
         ) {
                 while (rs.next()){
-                    categories.add(getCategoryFromResultSet(rs));
+                    categories.add(ResultSetConverter.getCategoryFromResultSet(rs));
                 }
         }
 
         return categories;
-    }
-
-    private Category getCategoryFromResultSet(ResultSet resultSet) throws SQLException{
-        Category category = new Category();
-        category.setId(resultSet.getInt("category_id"));
-        category.setName(resultSet.getString("category_name"));
-        return category;
     }
 
     public int countNumberOfCardsInACategory(int id) throws SQLException {
@@ -146,7 +141,7 @@ public class CategoryRepository {
 
             try(ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()) {
-                    flashcards.add(getFlashcardFromResultSet(rs));
+                    flashcards.add(ResultSetConverter.getFlashcardFromResultSet(rs));
                 }
             }
         }
@@ -157,18 +152,6 @@ public class CategoryRepository {
         Random random = new Random();
         int result = random.nextInt(max) + 1;
         return result;
-    }
-
-    private Flashcard getFlashcardFromResultSet(ResultSet resultSet) throws SQLException {
-        Flashcard flashcard = new Flashcard();
-        try {
-            flashcard.setId(resultSet.getInt("card_id"));
-            flashcard.setQuestion(resultSet.getString("question"));
-            flashcard.setAnswer(resultSet.getString("answer"));
-            return flashcard;
-        } catch (SQLException e) {
-            throw new SQLException("Could not create a Flashcard object from the ResultSet", e);
-        }
     }
 
 }
