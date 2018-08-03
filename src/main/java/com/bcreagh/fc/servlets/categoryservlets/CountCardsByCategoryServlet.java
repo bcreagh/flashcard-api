@@ -31,8 +31,10 @@ public class CountCardsByCategoryServlet extends BaseServlet {
             response.getWriter().write(json);
 
         } catch (IllegalArgumentException e) {
+            System.err.println(e.toString());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } catch (Exception e) {
+            System.err.println(e.toString());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
