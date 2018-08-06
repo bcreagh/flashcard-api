@@ -24,6 +24,22 @@ public class CategoryRepository {
         Class.forName("com.mysql.jdbc.Driver"); //this is done to register the jdbc driver with the driver manager
     }
 
+    public boolean categoryExists(int id) throws SQLException {
+        Category category = null;
+
+        try (
+                Connection conn = DriverManager.getConnection(dbUrl, username, password);
+                PreparedStatement stmt = conn.prepareStatement("select * from category where category_id = ?")
+        ) {
+
+            stmt.setInt(1, id);
+
+            try(ResultSet rs = stmt.executeQuery()) {
+                return rs.first();
+            }
+        }
+    }
+
     public Category getCategory(int id) throws SQLException {
         Category category = null;
 
