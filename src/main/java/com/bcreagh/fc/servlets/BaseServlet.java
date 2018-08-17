@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 public class BaseServlet extends HttpServlet {
@@ -35,6 +36,27 @@ public class BaseServlet extends HttpServlet {
         }
 
         return paramValue;
+    }
+
+    protected <T> T getObjectFromJsonRequest(HttpServletRequest request, Class<T> clazz) throws IOException {
+        Gson gson = new Gson();
+        String json = getStringFromRequestBody(request);
+
+        T obj = gson.fromJson(json, clazz);
+        return obj;
+    }
+
+    private String getStringFromRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader reader = request.getReader();
+        String line;
+        String result;
+
+        while((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        result = stringBuilder.toString();
+        return result;
     }
 
     protected <T> void writeJsonResponse(HttpServletResponse response, T data) throws IOException {

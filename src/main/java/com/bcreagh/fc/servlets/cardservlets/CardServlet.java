@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/cards")
-public class CardByIdServlet extends BaseServlet {
+public class CardServlet extends BaseServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -22,6 +22,25 @@ public class CardByIdServlet extends BaseServlet {
 
             writeJsonResponse(response, flashcard);
             
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            int categoryId = getPositiveIntParameter(request, "categoryId");
+            FlashcardRepository flashcardRepository = new FlashcardRepository();
+
+            Flashcard flashcard = getObjectFromJsonRequest(request, Flashcard.class);
+
+            flashcardRepository.createFlashcard(flashcard, categoryId);
+
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

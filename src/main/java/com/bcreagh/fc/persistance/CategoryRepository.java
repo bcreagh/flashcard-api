@@ -25,8 +25,6 @@ public class CategoryRepository {
     }
 
     public boolean categoryExists(int id) throws SQLException {
-        Category category = null;
-
         try (
                 Connection conn = DriverManager.getConnection(dbUrl, username, password);
                 PreparedStatement stmt = conn.prepareStatement("select * from category where category_id = ?")
