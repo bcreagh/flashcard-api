@@ -1,5 +1,6 @@
 package com.bcreagh.fc.servlets.cardservlets;
 
+import com.bcreagh.fc.domain.DTO.StringResult;
 import com.bcreagh.fc.domain.Flashcard;
 import com.bcreagh.fc.persistance.FlashcardRepository;
 import com.bcreagh.fc.servlets.BaseServlet;
@@ -40,6 +41,8 @@ public class CardServlet extends BaseServlet {
             Flashcard flashcard = getObjectFromJsonRequest(request, Flashcard.class);
 
             flashcardRepository.createFlashcard(flashcard, categoryId);
+
+            writeJsonResponse(response, new StringResult("Ok"));
 
         } catch (IllegalArgumentException e) {
             System.err.println(e.toString());

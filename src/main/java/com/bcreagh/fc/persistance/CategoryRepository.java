@@ -106,6 +106,26 @@ public class CategoryRepository {
         return count;
     }
 
+    public void createCategory(Category category) throws SQLException {
+        if(category == null) {
+            throw new IllegalArgumentException("The category cannot be null");
+        }
+
+        String createCardCategory = "insert into category (category_name) values (?)";
+
+        try (
+                Connection conn = DriverManager.getConnection(dbUrl, username, password);
+                PreparedStatement stmt = conn.prepareStatement(createCardCategory)
+        ) {
+            stmt.setString(1, category.getName());
+            int rowsAffected = stmt.executeUpdate();
+
+            if(rowsAffected <= 0) {
+                throw new SQLException("The card_category was not created: " + rowsAffected + " rows were affected");
+            }
+        }
+    }
+
     public Flashcard getRandomCardByCategoryId(int categoryId) throws SQLException {
         //returns a random card from the category specified by the categoryId
 

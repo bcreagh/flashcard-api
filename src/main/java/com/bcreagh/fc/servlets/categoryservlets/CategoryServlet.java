@@ -1,6 +1,7 @@
 package com.bcreagh.fc.servlets.categoryservlets;
 
 import com.bcreagh.fc.domain.Category;
+import com.bcreagh.fc.domain.DTO.StringResult;
 import com.bcreagh.fc.persistance.CategoryRepository;
 import com.bcreagh.fc.servlets.BaseServlet;
 import com.google.gson.Gson;
@@ -34,5 +35,25 @@ public class CategoryServlet extends BaseServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        try {
+
+            Category category = getObjectFromJsonRequest(request, Category.class);
+
+            CategoryRepository categoryRepository = new CategoryRepository();
+            categoryRepository.createCategory(category);
+
+            writeJsonResponse(response, new StringResult("Ok"));
+
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.toString());
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }
